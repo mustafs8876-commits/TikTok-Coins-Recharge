@@ -1,0 +1,3000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: #ffffff;
+            color: #000000;
+            min-height: 100vh;
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+        
+        /* Password Modal Styles */
+        #passwordModal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .password-modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+        
+        .password-logo {
+            margin-bottom: 20px;
+        }
+        
+        .password-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        .password-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .password-input:focus {
+            border-color: #ff0050;
+        }
+        
+        .password-error {
+            color: #ff0050;
+            font-size: 14px;
+            margin-bottom: 15px;
+            min-height: 20px;
+            display: none;
+        }
+        
+        .password-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .password-button:hover {
+            background: #e00046;
+        }
+        
+        /* Main Content - initially hidden */
+        #mainContent {
+            display: none;
+        }
+        
+        /* TikTok Header Styles */
+        .tiktok-xk7ai4-DivHeaderContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #fff;
+            border-bottom: 1px solid rgba(22, 24, 35, 0.12);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+        
+        .tiktok-1gd9bb4-DivHeaderWrapperMain {
+            width: 100%;
+            max-width: 1150px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+        
+        .tiktok-oteyea-DivLeftContainer {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .tiktok-dx28vs-SpanHamburgerContainer {
+            margin-right: 16px;
+            cursor: pointer;
+        }
+        
+        .tiktok-1g7ql4c-SpanHamburgerWrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .tiktok-5eteof-SpanHamburgerPath {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background-color: #161823;
+            margin: 2px 0;
+            border-radius: 1px;
+        }
+        
+        .tiktok-ojnv26-StyledLink-StyledLinkLogo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #161823;
+        }
+        
+        .tiktok-ojnv26-StyledLink-StyledLinkLogo svg {
+            margin-right: 8px;
+        }
+        
+        .tiktok-ojnv26-StyledLink-StyledLinkLogo strong {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .tiktok-1x100u9-DivHeaderCenterContainer {
+            flex: 0 1 500px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .tiktok-1asq5wp-DivSearchFormContainer {
+            width: 100%;
+            max-width: 360px;
+        }
+        
+        .tiktok-q8q040-DivHeaderRightContainer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+        }
+        
+        .tiktok-szsi1x-DivUploadContainer {
+            margin-right: 16px;
+        }
+        
+        .tiktok-2gvzau-ALink-StyledLink {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #161823;
+            padding: 8px 16px;
+            border: 1px solid rgba(22, 24, 35, 0.12);
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .tiktok-1qup28j-DivUpload {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tiktok-qeydvm-StyledPlusIcon {
+            margin-right: 6px;
+        }
+        
+        .tiktok-9j9jz0-DivMessageIconContainer {
+            margin-right: 16px;
+        }
+        
+        .tiktok-22xkqc-StyledLink {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #161823;
+        }
+        
+        .tiktok-y48l9g-StyledIcon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .tiktok-1deszxq-DivHeaderInboxContainer {
+            margin-right: 16px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .tiktok-1g0p6jv-StyledInboxIcon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .tiktok-15iwytd-DivProfileContainer {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+        
+        /* Wallet Info Section */
+        .wallet-info-container {
+            margin-top: 80px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tiktok-k58u1v-DivTitleInfoContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .tiktok-12970u9-H1TitleInfoCoin {
+            font-size: 22px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .tiktok-9jfqt5-StyledTransactionHistoryLink {
+            color: #FE2C55;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .tiktok-krn24s-DivProfileAndBannerRow {
+            margin-bottom: 30px;
+        }
+        
+        .tiktok-d2sjra-DivProfileInfo {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .tiktok-9l16e2-DivNameCoinInfo {
+            display: flex;
+            flex-direction: column;
+            margin-left: 12px;
+        }
+        
+        .tiktok-1uiqlhf-SpanNameInfo {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .tiktok-6vx15k-DivCoinInfo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #000;
+        }
+        
+        .tiktok-908odc-StyledCoinIcon {
+            margin-right: 6px;
+        }
+        
+        .tiktok-1bro1iw-SpanCoinNum {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 20px 20px;
+        }
+        
+        .username-section {
+            margin-bottom: 20px;
+        }
+        
+        .username-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .username-input-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 6px 12px;
+            background: #f8f8f8;
+            position: relative;
+            height: 44px;
+        }
+        
+        .at-symbol {
+            color: #666;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+        
+        .username-input {
+            flex: 1;
+            border: none;
+            background: none;
+            font-size: 16px;
+            outline: none;
+            color: #000;
+            padding-right: 30px;
+            height: 100%;
+        }
+        
+        .clear-button {
+            position: absolute;
+            right: 50px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            display: none;
+            transition: color 0.3s ease;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .clear-button:hover {
+            background: #f0f0f0;
+            color: #ff0050;
+        }
+        
+        .search-icon-btn {
+            background: none;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .search-icon-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .search-icon-img {
+            width: 23px;
+            height: 22px;
+        }
+        
+        .search-result {
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .search-neutral {
+            color: #666;
+        }
+        
+        .search-success {
+            color: #00cc66;
+        }
+        
+        .search-error {
+            color: #ff0050;
+        }
+
+        /* User Profile Display */
+        .user-profile-display {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex: 0 0 40px;
+        }
+
+        .user-profile-details {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .user-display-name {
+            overflow: hidden;
+            color: #000;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .user-username {
+            color: #666;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .user-profile-stats {
+            display: flex;
+            flex: 0 0 auto;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 0;
+            margin-left: auto;
+            line-height: 1.2;
+        }
+
+        .user-profile-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .user-profile-stat + .user-profile-stat {
+            border-left: 1px solid #d9d9d9;
+        }
+
+        .user-profile-stat span {
+            color: #777;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .user-profile-stat strong {
+            color: #111;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 480px) {
+            .user-profile-display {
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .user-profile-stat {
+                gap: 3px;
+                padding: 0 5px;
+            }
+
+            .user-profile-stat span {
+                font-size: 10px;
+            }
+
+            .user-profile-stat strong {
+                font-size: 13px;
+            }
+        }
+
+        .balance {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .recharge-title {
+            font-size: 16px;
+            color: #000;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .fee-notice {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .package-option {
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 80, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .package-option:hover::before {
+            left: 100%;
+        }
+        
+        .package-option.selected {
+            border-color: #ff0050;
+            background: #fff5f8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.15);
+        }
+        
+        .coins-count {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 6px;
+            gap: 6px;
+        }
+        
+        .coin-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .price {
+            font-size: 14px;
+            color: #666666;
+            font-weight: 500;
+        }
+        
+        .custom-package {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .custom-input {
+            width: 100%;
+            border: none;
+            background: none;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 6px;
+            outline: none;
+        }
+        
+        .custom-range {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .payment-methods {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            padding: 15px 0;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .payment-method {
+            width: 40px;
+            height: 25px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 16px 0;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .total-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .recharge-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recharge-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .recharge-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .recharge-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+        
+        .recharge-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: #000;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* Custom Modal Styles */
+        .custom-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .custom-amount-section {
+            margin-bottom: 20px;
+        }
+        
+        .custom-amount-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .custom-amount-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            background: #f8f8f8;
+            margin-bottom: 20px;
+        }
+        
+        .custom-amount-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .custom-amount-arrow {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .custom-price-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .custom-price-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .keypad-button {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .keypad-button:hover {
+            background: #f0f0f0;
+        }
+        
+        .keypad-button:active {
+            background: #e8e8e8;
+            transform: scale(0.95);
+        }
+        
+        .keypad-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .keypad-number {
+            flex: 1;
+        }
+        
+        .keypad-zero {
+            grid-column: span 2;
+        }
+        
+        .keypad-backspace {
+            background: #fff5f8;
+            color: #ff0050;
+        }
+        
+        .custom-total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 25px 0;
+            padding: 20px 0;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .custom-total-label {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .custom-total-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .apply-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .apply-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+        
+        /* Other modal styles remain the same */
+        .secure-notice {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .account-section {
+            margin-bottom: 20px;
+        }
+        
+        .account-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .account-coins {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .payment-methods-modal {
+            margin-bottom: 20px;
+        }
+        
+        .payment-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: #ff0050;
+            background: #fff5f8;
+        }
+        
+        .payment-option.selected {
+            border-color: #ff0050;
+            background: #fff5f8;
+            transform: translateX(5px);
+        }
+        
+        .payment-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+        
+        .payment-text {
+            font-size: 16px;
+            flex: 1;
+        }
+        
+        .payment-subtext {
+            font-size: 14px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .terms {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .pay-now-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .pay-now-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+        
+        .hidden-checkbox {
+            display: none;
+        }
+        
+        .paypal-content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .paypal-logo {
+            font-size: 32px;
+            color: #0070ba;
+            margin-bottom: 20px;
+        }
+        
+        .paypal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .paypal-email {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .paypal-button {
+            background: #0070ba;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .paypal-button:hover {
+            background: #005ea6;
+            transform: translateY(-2px);
+        }
+        
+        .paypal-cancel {
+            background: none;
+            border: 1px solid #e0e0e0;
+            color: #666;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .paypal-cancel:hover {
+            background: #f8f8f8;
+        }
+        
+        /* Улучшенный Success Modal */
+        .success-content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .success-animation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4caf50;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px #4caf50;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+            position: relative;
+        }
+        
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px #4caf50;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        
+        .check-icon .icon-line {
+            stroke-width: 2;
+            stroke: #fff;
+            fill: none;
+        }
+        
+        .check-icon .line-tip {
+            transform-origin: 0 0;
+            stroke-dasharray: 29;
+            stroke-dashoffset: 29;
+            animation: draw .3s ease-in-out .8s forwards;
+        }
+        
+        .check-icon .line-long {
+            transform-origin: 0 0;
+            stroke-dasharray: 59;
+            stroke-dashoffset: 59;
+            animation: draw .3s ease-in-out .9s forwards;
+        }
+        
+        .check-icon .icon-circle {
+            stroke-width: 2;
+            stroke: #4caf50;
+            fill: none;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-miterlimit: 10;
+            animation: stroke .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .check-icon .icon-fix {
+            stroke-width: 2;
+            stroke: #4caf50;
+            fill: none;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke .3s cubic-bezier(0.65, 0, 0.45, 1) 1.2s forwards;
+        }
+        
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+        
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 40px #4caf50;
+            }
+        }
+        
+        @keyframes draw {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000;
+            background: linear-gradient(90deg, #ff0050, #fe2c55);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .success-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        
+        .success-details {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .success-detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .success-detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #000;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            background: #00cc66;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .success-info {
+            display: flex;
+            align-items: flex-start;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .info-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+        
+        .info-text {
+            flex: 1;
+            font-size: 14px;
+            color: #1565c0;
+            line-height: 1.4;
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .back-button, .view-history-button {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .back-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+        }
+        
+        .back-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+        
+        .view-history-button {
+            background: transparent;
+            color: #666;
+            border: 1.5px solid #e0e0e0;
+        }
+        
+        .view-history-button:hover {
+            background: #f8f8f8;
+            border-color: #ff0050;
+            color: #ff0050;
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            font-size: 16px;
+        }
+        
+        /* Confetti animation */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff0050;
+            opacity: 0;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(500px) rotate(360deg);
+            }
+        }
+        
+        /* Transaction History Modal */
+        .transaction-history-content {
+            padding: 20px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-username {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .transaction-coins {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .transaction-date {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .transaction-status {
+            font-weight: 600;
+            color: #00cc66;
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .clear-history-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .clear-history-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 9s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Loading Animation */
+        .loading-content {
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+        
+        .red-circle {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #ff0050;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: tiktok-spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        @keyframes tiktok-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Payment Card Styles */
+        .card-payment-content {
+            padding: 20px;
+        }
+        
+        .card-form {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #ff0050;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .fake-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-chip {
+            width: 40px;
+            height: 30px;
+            background: #ffcc00;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .card-number {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .card-name {
+            font-size: 14px;
+        }
+        
+        .card-expiry {
+            font-size: 14px;
+        }
+        
+        /* Apple Pay Animation */
+        .apple-pay-animation {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .apple-pay-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .payment-processing {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Settings Button */
+        .settings-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #161823;
+            margin-left: 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .settings-button:hover {
+            color: #ff0050;
+        }
+
+        /* Settings Modal */
+        .settings-form-group {
+            margin-bottom: 20px;
+        }
+        
+        .settings-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .settings-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .settings-input:focus {
+            border-color: #ff0050;
+        }
+        
+        .save-settings-button {
+            background: #ff0050;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .save-settings-button:hover {
+            background: #e00046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 0, 80, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Modal -->
+    <div id="passwordModal">
+        <div class="password-modal-content">
+            <div class="password-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 118 42" width="118" height="42" alt="TikTok">
+                    <path fill="#25F4EE" d="M9.875 16.842v-1.119A8.836 8.836 0 008.7 15.64c-4.797-.006-8.7 3.9-8.7 8.707a8.706 8.706 0 003.718 7.135A8.675 8.675 0 011.38 25.55c0-4.737 3.794-8.598 8.495-8.707z"></path>
+                    <path fill="#25F4EE" d="M10.086 29.526c2.14 0 3.89-1.707 3.967-3.83l.006-18.968h3.463a6.78 6.78 0 01-.11-1.202h-4.726l-.006 18.969a3.978 3.978 0 01-3.967 3.829 3.93 3.93 0 01-1.846-.46 3.949 3.949 0 003.22 1.662zM23.992 13.166v-1.055a6.506 6.506 0 01-3.583-1.068 a6.571 6.571 0 003.583 2.123z"></path>
+                    <path fill="#FE2C55" d="M20.409 11.043a6.54 6.54 0 01-1.616-4.315h-1.265a6.557 6.557 0 002.88 4.316zM8.706 20.365a3.98 3.98 0 00-3.973 3.976c0 1.528.869 2.858 2.134 3.523a3.936 3.936 0 01-.754-2.321 a3.98 3.98 0 013.973-3.976c.409 0 .805.07 1.175.185v-4.833a8.837 8.837 0 00-1.175-.083c-.07 0-.134.006-.204.006v3.708a3.999 3.999 0 00-1.176-.185z"></path>
+                    <path fill="#FE2C55" d="M23.992 13.166v3.676c-2.453 0-4.727-.786-6.58-2.116v9.621c0 4.802-3.902 8.714-8.706 8.714a8.669 8.669 0 01-4.988-1.579 a8.69 8.69 0 006.368 2.781c4.797 0 8.707-3.906 8.707-8.714v-9.621a11.25 11.25 0 006.579 2.116v-4.73c-.48 0-.94-.052-1.38-.148z"></path>
+                    <path fill="black" d="M17.413 24.348v-9.622a11.251 11.251 0 006.58 2.116v-3.676a6.571 6.571 0 01-3.584-2.123 6.61 6.61 0 01-2.888-4.315H14.06l-.006 18.968a3.978 3.978 0 01-3.967 3.83A3.99 3.99 0 016.86 27.87a3.991 3.991 0 01-2.133-3.523A3.98 3.98 0 018.7 20.372c.409 0 .805.07 1.175.185v-3.708c-4.701.103-8.495 3.964-8.495 8.701 0 2.29.888 4.373 2.338 5.933a8.669 8.669 0 004.988 1.58c4.798 0 8.707-3.913 8.707-8.714zM30.048 13.179h14.774l-1.354 4.232h-3.832v15.644h-4.778V17.41l-4.804.006-.006-4.238zM69.032 13.179h15.120l-1.355 4.232h-4.17v15.644h-4.785V17.41l-4.804.006-.006-4.238zM45.73 19.502h4.733v13.553h-4.708l-.026-13.553zM52.347 13.128h4.733v9.257l4.689-4.61h5.646l-5.934 5.76 6.644 9.52h-5.213l-4.433-6.598-1.405 1.362v5.236H52.34V13.128h.006zM102.49 13.128h4.734v9.257l4.688-4.61h5.647l-5.934 5.76 6.643 9.52h-5.206l-4.433-6.598-1.405 1.362v5.236h-4.734V13.128zM48.093 17.954a2.384 2.384 0 002.382-2.384 2.384 2.384 0 10-2.382 2.384z"></path>
+                    <path fill="#25F4EE" d="M83.544 24.942a8.112 8.112 0 017.474-8.087 8.748 8.748 0 00-.709-.026c-4.478 0-8.106 3.631-8.106 8.113 0 4.482 3.628 8.113 8.106 8.113.21 0 .498-.013.71-.026-4.178-.326-7.475-3.823-7.475-8.087z"></path>
+                    <path fill="#FE2C55" d="M92.858 16.83c-.217 0-.505.012-.716.025a8.111 8.111 0 017.468 8.087 8.112 8.112 0 01-7.468 8.087c.211.02.499.026.716.026 4.478 0 8.106-3.631 8.106-8.113 0-4.482-3.628-8.113-8.106-8.113z"></path>
+                    <path fill="black" d="M91.58 28.887a3.94 3.94 0 01-3.94-3.945 3.94 3.94 0 117.882 0c0 2.18-1.77 3.945-3.942 3.945zm0-12.058c-4.477 0-8.106 3.631-8.106 8.113 0 4.482 3.629 8.113 8.106 8.113 4.478 0 8.106-3.631 8.106-8.113 0-4.482-3.628-8.113-8.106-8.113z"></path>
+                </svg>
+            </div>
+            <div class="password-title">Enter Password</div>
+            <div class="password-subtitle">Please enter the password to access TikTok Wallet</div>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password">
+            <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+            <button class="password-button" id="submitPassword">Submit</button>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until password is entered) -->
+    <div id="mainContent">
+        <!-- TikTok Header -->
+        <div style="right:0" class="tiktok-xk7ai4-DivHeaderContainer e10win0d0">
+            <div class="tiktok-1gd9bb4-DivHeaderWrapperMain e10win0d1">
+                <div class="tiktok-oteyea-DivLeftContainer e1r8d7c0">
+                    <span class="tiktok-dx28vs-SpanHamburgerContainer ep1j4vz2">
+                        <span class="tiktok-1g7ql4c-SpanHamburgerWrapper ep1j4vz0">
+                            <span class="tiktok-5eteof-SpanHamburgerPath ep1j4vz1"></span> 
+                            <span class="tiktok-5eteof-SpanHamburgerPath ep1j4vz1"></span> 
+                            <span class="tiktok-5eteof-SpanHamburgerPath ep1j4vz1"></span>
+                        </span>
+                    </span> 
+                    <a style="position:relative" data-e2e="tiktok-logo" class="e1an6zpe0 tiktok-ojnv26-StyledLink-StyledLinkLogo er1vbsz0" aria-label="Go to TikTok For You feed" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 118 42" width="118" height="42" alt="TikTok">
+                            <path fill="#25F4EE" d="M9.875 16.842v-1.119A8.836 8.836 0 008.7 15.64c-4.797-.006-8.7 3.9-8.7 8.707a8.706 8.706 0 003.718 7.135A8.675 8.675 0 011.38 25.55c0-4.737 3.794-8.598 8.495-8.707z"></path>
+                            <path fill="#25F4EE" d="M10.086 29.526c2.14 0 3.89-1.707 3.967-3.83l.006-18.968h3.463a6.78 6.78 0 01-.11-1.202h-4.726l-.006 18.969a3.978 3.978 0 01-3.967 3.829 3.93 3.93 0 01-1.846-.46 3.949 3.949 0 003.22 1.662zM23.992 13.166v-1.055a6.506 6.506 0 01-3.583-1.068 a6.571 6.571 0 003.583 2.123z"></path>
+                            <path fill="#FE2C55" d="M20.409 11.043a6.54 6.54 0 01-1.616-4.315h-1.265a6.557 6.557 0 002.88 4.316zM8.706 20.365a3.98 3.98 0 00-3.973 3.976c0 1.528.869 2.858 2.134 3.523a3.936 3.936 0 01-.754-2.321 a3.98 3.98 0 013.973-3.976c.409 0 .805.07 1.175.185v-4.833a8.837 8.837 0 00-1.175-.083c-.07 0-.134.006-.204.006v3.708a3.999 3.999 0 00-1.176-.185z"></path>
+                            <path fill="#FE2C55" d="M23.992 13.166v3.676c-2.453 0-4.727-.786-6.58-2.116v9.621c0 4.802-3.902 8.714-8.706 8.714a8.669 8.669 0 01-4.988-1.579 a8.69 8.69 0 006.368 2.781c4.797 0 8.707-3.906 8.707-8.714v-9.621a11.25 11.25 0 006.579 2.116v-4.73c-.48 0-.94-.052-1.38-.148z"></path>
+                            <path fill="black" d="M17.413 24.348v-9.622a11.251 11.251 0 006.58 2.116v-3.676a6.571 6.571 0 01-3.584-2.123 6.61 6.61 0 01-2.888-4.315H14.06l-.006 18.968a3.978 3.978 0 01-3.967 3.83A3.99 3.99 0 016.86 27.87a3.991 3.991 0 01-2.133-3.523A3.98 3.98 0 018.7 20.372c.409 0 .805.07 1.175.185v-3.708c-4.701.103-8.495 3.964-8.495 8.701 0 2.29.888 4.373 2.338 5.933a8.669 8.669 0 004.988 1.58c4.798 0 8.707-3.913 8.707-8.714zM30.048 13.179h14.774l-1.354 4.232h-3.832v15.644h-4.778V17.41l-4.804.006-.006-4.238zM69.032 13.179h15.120l-1.355 4.232h-4.17v15.644h-4.785V17.41l-4.804.006-.006-4.238zM45.73 19.502h4.733v13.553h-4.708l-.026-13.553zM52.347 13.128h4.733v9.257l4.689-4.61h5.646l-5.934 5.76 6.644 9.52h-5.213l-4.433-6.598-1.405 1.362v5.236H52.34V13.128h.006zM102.49 13.128h4.734v9.257l4.688-4.61h5.647l-5.934 5.76 6.643 9.52h-5.206l-4.433-6.598-1.405 1.362v5.236h-4.734V13.128zM48.093 17.954a2.384 2.384 0 002.382-2.384 2.384 2.384 0 10-2.382 2.384z"></path>
+                            <path fill="#25F4EE" d="M83.544 24.942a8.112 8.112 0 017.474-8.087 8.748 8.748 0 00-.709-.026c-4.478 0-8.106 3.631-8.106 8.113 0 4.482 3.628 8.113 8.106 8.113.21 0 .498-.013.71-.026-4.178-.326-7.475-3.823-7.475-8.087z"></path>
+                            <path fill="#FE2C55" d="M92.858 16.83c-.217 0-.505.012-.716.025a8.111 8.111 0 017.468 8.087 8.112 8.112 0 01-7.468 8.087c.211.02.499.026.716.026 4.478 0 8.106-3.631 8.106-8.113 0-4.482-3.628-8.113-8.106-8.113z"></path>
+                            <path fill="black" d="M91.58 28.887a3.94 3.94 0 01-3.94-3.945 3.94 3.94 0 117.882 0c0 2.18-1.77 3.945-3.942 3.945zm0-12.058c-4.477 0-8.106 3.631-8.106 8.113 0 4.482 3.629 8.113 8.106 8.113 4.478 0 8.106-3.631 8.106-8.113 0-4.482-3.628-8.113-8.106-8.113z"></path>
+                        </svg> 
+                        <strong></strong>
+                    </a>
+                </div>
+                <div class="tiktok-1x100u9-DivHeaderCenterContainer eeptrdg0">
+                    <div class="tiktok-1asq5wp-DivSearchFormContainer e1hi1cmj0"></div>
+                </div>
+                <div class="tiktok-q8q040-DivHeaderRightContainer e13wiwn60">
+                    <div data-e2e="upload-icon" class="tiktok-szsi1x-DivUploadContainer e18d3d940">
+                        <a href="#" target="_self" class="e18d3d942 tiktok-2gvzau-ALink-StyledLink er1vbsz1" aria-label="Upload a video" id="uploadButton">
+                            <div class="tiktok-1qup28j-DivUpload e18d3d944">
+                                <svg class="tiktok-qeydvm-StyledPlusIcon e18d3d945" width="1em" data-e2e="" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 2.5C7.58579 2.5 7.25 2.83579 7.25 3.25V7.25H3.25C2.83579 7.25 2.5 7.58579 2.5 8C2.5 8.41421 2.83579 8.75 3.25 8.75H7.25V12.75C7.25 13.1642 7.58579 13.5 8 13.5C8.41421 13.5 8.75 13.1642 8.75 12.75V8.75H12.75C13.1642 8.75 13.5 8.41421 13.5 8C13.5 7.58579 13.1642 7.25 12.75 7.25H8.75V3.25C8.75 2.83579 8.41421 2.5 8 2.5Z"></path>
+                                </svg>
+                                <span class="tiktok-y3rt08-SpanUploadText e18d3d946">Upload</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div data-e2e="top-dm-icon" class="tiktok-9j9jz0-DivMessageIconContainer e1nx07zo0">
+                        <a aria-label="Open messages" class="tiktok-22xkqc-StyledLink er1vbsz0" href="#">
+                            <span>
+                                <svg class="tiktok-y48l9g-StyledIcon e1nx07zo1" width="1em" data-e2e="" height="1em" viewBox="0 0 48 48" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.17877 7.17357C2.50304 6.45894 3.21528 6 4.00003 6H44C44.713 6 45.372 6.37952 45.7299 6.99615C46.0877 7.61278 46.0902 8.37327 45.7365 8.99228L25.7365 43.9923C25.3423 44.6821 24.5772 45.0732 23.7872 44.9886C22.9972 44.9041 22.3321 44.3599 22.0929 43.6023L16.219 25.0017L2.49488 9.31701C1.97811 8.72642 1.85449 7.88819 2.17877 7.17357ZM20.377 24.8856L24.531 38.0397L40.5537 10H8.40757L18.3918 21.4106L30.1002 14.2054C30.5705 13.9159 31.1865 14.0626 31.4759 14.533L32.5241 16.2363C32.8136 16.7066 32.6669 17.3226 32.1966 17.612L20.377 24.8856Z"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                    <div tabindex="0" role="button" aria-expanded="false" aria-label="Inbox
+        0 unread notifications" data-e2e="inbox-icon" class="tiktok-1deszxq-DivHeaderInboxContainer e18kkhh40">
+                        <span>
+                            <svg class="tiktok-1g0p6jv-StyledInboxIcon e18kkhh41" width="32" data-e2e="" height="32" viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M24.0362 21.3333H18.5243L15.9983 24.4208L13.4721 21.3333H7.96047L7.99557 8H24.0009L24.0362 21.3333ZM24.3705 23.3333H19.4721L17.2883 26.0026C16.6215 26.8176 15.3753 26.8176 14.7084 26.0026L12.5243 23.3333H7.62626C6.70407 23.3333 5.95717 22.5845 5.9596 21.6623L5.99646 7.66228C5.99887 6.74352 6.74435 6 7.66312 6H24.3333C25.2521 6 25.9975 6.7435 26 7.66224L26.0371 21.6622C26.0396 22.5844 25.2927 23.3333 24.3705 23.3333ZM12.6647 14C12.2965 14 11.998 14.2985 11.998 14.6667V15.3333C11.998 15.7015 12.2965 16 12.6647 16H19.3313C19.6995 16 19.998 15.7015 19.998 15.3333V14.6667C19.998 14.2985 19.6995 14 19.3313 14H12.6647Z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div id="header-more-menu-icon" tabindex="0" style="background-image:url('https://i.ibb.co/5R2VNRk/34c4032d077f8182e179f70031c05119.png')" role="button" aria-label="Open settings menu" aria-expanded="false" aria-haspopup="true" aria-controls="" data-e2e="profile-icon" class="tiktok-15iwytd-DivProfileContainer efubjyv0"></div>
+                    <button class="settings-button" id="settingsButton">.</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Info Section -->
+        <div class="wallet-info-container">
+            <div class="tiktok-k58u1v-DivTitleInfoContainer e1sanywi1">
+                <h1 data-e2e="wallet-title-get-coins" class="tiktok-12970u9-H1TitleInfoCoin e1sanywi2">Get Coins</h1>
+                <a data-e2e="wallet-transaction-history-entrance" class="tiktok-9jfqt5-StyledTransactionHistoryLink e1sanywi3" href="#" id="viewTransactionHistory">View transaction history</a>
+            </div>
+            <div class="tiktok-krn24s-DivProfileAndBannerRow e1sanywi8">
+                <div class="tiktok-d2sjra-DivProfileInfo e1sanywi9">
+                    <div style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png');height:44px;min-width:44px;margin-left:0" role="button" aria-controls="" data-e2e="profile-icon" class="tiktok-15iwytd-DivProfileContainer efubjyv0"></div>
+                    <div class="tiktok-9l16e2-DivNameCoinInfo e1sanywi10">
+                        <span data-e2e="wallet-user-name" class="tiktok-1uiqlhf-SpanNameInfo e1sanywi12" id="displayUsername">@coins_live_recharge</span>
+                        <div class="tiktok-6vx15k-DivCoinInfo e1sanywi11">
+                            <svg class="tiktok-908odc-StyledCoinIcon e1sanywi5" width="1em" data-e2e="" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                                <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                                <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                            </svg> 
+                            <span data-e2e="wallet-coins-balance" class="tiktok-1bro1iw-SpanCoinNum e1sanywi4 text-dark fs-9 text-bold" id="currentBalance">75,865,434,345</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="username-section">
+                <div class="username-label">Enter username</div>
+                <div class="username-input-container">
+                    <span class="at-symbol">@</span>
+                    <input type="text" class="username-input" id="usernameInput" placeholder="username" maxlength="25" aria-label="TikTok username" autocomplete="off">
+                    <button type="button" class="clear-button" id="clearButton" aria-label="Clear username">×</button>
+                    <button type="button" class="search-icon-btn" id="searchButton" aria-label="Search TikTok username">
+                        <img alt="Находить Generic Detailed Outline иконка" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/7689/7689114.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;" class="search-icon-img">
+                    </button>
+                </div>
+                <div class="search-result search-neutral" id="searchResult" aria-live="polite">Enter TikTok username</div>
+                <div id="userProfileDisplay" class="user-profile-display" style="display: none;">
+                    <img id="userAvatar" class="user-avatar" alt="" loading="eager" decoding="async" referrerpolicy="no-referrer" style="display: none;">
+                    <div class="user-profile-details">
+                        <div id="userDisplayName" class="user-display-name" style="display: none;"></div>
+                        <div id="userUsername" class="user-username"></div>
+                    </div>
+                    <div id="userProfileStats" class="user-profile-stats" style="display: none;">
+                        <div class="user-profile-stat"><span>Подписки</span><strong id="userFollowingCount">—</strong></div>
+                        <div class="user-profile-stat"><span>Подписчики</span><strong id="userFollowerCount">—</strong></div>
+                        <div class="user-profile-stat"><span>Лайки</span><strong id="userLikeCount">—</strong></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recharge-title">Recharge:</div>
+            <div class="fee-notice">Save around 25% with a lower third-party service fee.</div>
+            
+            <div class="packages-grid">
+                <label class="package-option">
+                    <input type="radio" name="coinPackage" class="hidden-checkbox" value="30" data-price="0.31">
+                    <div class="coins-count">
+                        <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                            <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                            <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                        </svg>
+                        30
+                    </div>
+                    <div class="price">$0.31</div>
+                </label>
+                
+                <label class="package-option">
+                    <input type="radio" name="coinPackage" class="hidden-checkbox" value="350" data-price="3.65">
+                    <div class="coins-count">
+                        <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                            <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                            <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                        </svg>
+                        350
+                    </div>
+                    <div class="price">$3.65</div>
+                </label>
+                
+                <label class="package-option">
+                    <input type="radio" name="coinPackage" class="hidden-checkbox" value="700" data-price="7.25">
+                    <div class="coins-count">
+                        <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                            <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                            <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                        </svg>
+                        700
+                    </div>
+                    <div class="price">$7.25</div>
+                </label>
+                
+                <label class="package-option">
+                    <input type="radio" name="coinPackage" class="hidden-checkbox" value="1400" data-price="14.49">
+                    <div class="coins-count">
+                        <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                            <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                            <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                        </svg>
+                        1400
+                    </div>
+                    <div class="price">$14.49</div>
+                </label>
+                
+                <label class="package-option">
+                    <input type="radio" name="coinPackage" class="hidden-checkbox" value="3500" data-price="36.20">
+                    <div class="coins-count">
+                        <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                            <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                            <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                        </svg>
+                        3500
+                    </div>
+                    <div class="price">$36.20</div>
+                </label>
+                
+                <!-- CUSTOM в сетке пакетов -->
+                <label class="package-option custom-package" id="customPackage">
+                    <div class="coins-count">CUSTOM</div>
+                    <div class="price">Tap to enter amount</div>
+                </label>
+            </div>
+            
+            <div class="payment-methods">
+                <div class="size-[24px] flex justify-center items-center rounded-xl bg-white"><img alt="Логин" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" style="color:transparent" src="https://cdn-icons-png.freepik.com/512/5968/5968299.png?ga=GA1.1.1751341094.1761754748"></div>
+                <div class="size-[24px] flex justify-center items-center rounded-xl bg-white"><img alt="Логин" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" style="color:transparent" src="https://cdn-icons-png.freepik.com/512/16174/16174534.png?ga=GA1.1.1751341094.1761754748"></div>           
+                <div class="size-[24px] flex justify-center items-center rounded-xl bg-white"><img alt="Логин" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" style="color:transparent" src="https://cdn-icons-png.freepik.com/512/2424/2424596.png?ga=GA1.1.1751341094.1761754748"></div>
+                <div class="size-[24px] flex justify-center items-center rounded-xl bg-white"><img alt="Логин" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" style="color:transparent" src="https://cdn-icons-png.freepik.com/512/1440/1440517.png?ga=GA1.1.1751341094.1761754748"></div>
+                <div class="size-[24px] flex justify-center items-center rounded-xl bg-white"><img alt="Логин" loading="lazy" width="23" height="22" decoding="async" data-nimg="1" style="color:transparent" src="https://cdn-icons-png.freepik.com/512/349/349237.png?ga=GA1.1.1751341094.1761754748"></div>
+            </div>
+            
+            <div class="total-section">
+                <div class="total-label">Total</div>
+                <div class="total-amount" id="totalAmount">$0.00</div>
+            </div>
+            
+            <button class="recharge-button pulse" id="rechargeButton">Recharge</button>
+        </div>
+        
+        <!-- Custom Modal -->
+        <div class="modal" id="customModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Custom</div>
+                    <button class="close-btn" id="closeCustomModal">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="custom-amount-section">
+                        <div class="custom-amount-label">Number of Coins</div>
+                        <div class="custom-amount-display">
+                            <div class="custom-amount-value" id="customCoinAmount">5,000</div>
+                            <div class="custom-amount-arrow">▼</div>
+                        </div>
+                        
+                        <div class="custom-price-display">
+                            <svg class="coin-icon" width="1.5em" height="1.5em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                                <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                                <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+                            </svg>
+                            <div class="custom-price-amount" id="customPriceAmount">$52</div>
+                        </div>
+                    </div>
+                    
+                    <div class="keypad">
+                        <div class="keypad-button keypad-number" data-number="1">1</div>
+                        <div class="keypad-button keypad-number" data-number="2">2</div>
+                        <div class="keypad-button keypad-number" data-number="3">3</div>
+                        <div class="keypad-button keypad-number" data-number="4">4</div>
+                        <div class="keypad-button keypad-number" data-number="5">5</div>
+                        <div class="keypad-button keypad-number" data-number="6">6</div>
+                        <div class="keypad-button keypad-number" data-number="7">7</div>
+                        <div class="keypad-button keypad-number" data-number="8">8</div>
+                        <div class="keypad-button keypad-number" data-number="9">9</div>
+                        <div class="keypad-button keypad-number" data-number="000">000</div>
+                        <div class="keypad-button keypad-number" data-number="0">0</div>
+                        <div class="keypad-button keypad-backspace" id="backspaceButton">⌫</div>
+                    </div>
+                    
+                    <div class="custom-total-section">
+                        <div class="custom-total-label">Total</div>
+                        <div class="custom-total-amount" id="customTotalAmount">$52</div>
+                    </div>
+                    
+                    <button class="apply-button" id="applyCustomButton">Apply</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary Modal -->
+        <div class="modal" id="orderModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Order summary</div>
+                    <button class="close-btn" id="closeOrderModal">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="account-section">
+                        <div class="account-title">Account</div>
+                        <div class="account-username" id="selectedUsername">@username</div>
+                        <div class="account-coins" id="selectedCoins">30 Coins</div>
+                    </div>
+                    
+                    <div class="payment-methods-modal">
+                        <div class="payment-title">Select a payment method</div>
+                        
+                        <label class="payment-option" id="paypalOption">
+                            <input type="radio" name="paymentMethod" class="hidden-checkbox" value="paypal">
+                            <div class="payment-icon"><img alt="Онлайн-платежи Generic color lineal-color иконка" loading="lazy" width="32" height="32" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/888/888871.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;"></div>
+                            <div class="payment-text">
+                                <div>PayPal</div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="terms">
+                        By clicking "Pay now", you agree to our <strong>Terms of Purchase for Coins</strong>. By using any amount of Coins within 14 days after clicking "Pay now", you lose your right to withdraw from this purchase.
+                    </div>
+                    
+                    <button class="pay-now-button" id="payNowButton">Pay now</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card Payment Modal -->
+        <div class="modal" id="cardPaymentModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Payment</div>
+                    <button class="close-btn" id="closeCardPaymentModal">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="card-payment-content">
+                        <div class="fake-card">
+                            <div class=""><div class="flex size-[34px] items-center justify-center rounded-xl bg-white"><img alt="Покупка Generic Others иконка" loading="lazy" width="40" height="30" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/15449/15449783.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;"></div></div>
+                            <div class="card-number">•••• •••• •••• 0743</div>
+                            <div class="card-details">
+                                <div class="card-name">Rassul Mustafa</div>
+                                <div class="card-expiry">09/34</div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-form">
+                            <div class="form-group">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" class="form-input" value="5395 •••• •••• 0743" readonly>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-input" value="••/••" readonly>
+                                </div>
+                                <div class="form-col">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-input" value="•••" readonly>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Cardholder Name</label>
+                                <input type="text" class="form-input" value="JOHN DOE" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="total-section">
+                            <div class="total-label">Total</div>
+                            <div class="total-amount" id="cardPaymentTotalAmount">$0.31</div>
+                        </div>
+                        
+                        <button class="paypal-button" id="confirmCardPaymentButton">Pay $0.31</button>
+                        <button class="paypal-cancel" id="cancelCardPaymentButton">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Apple Pay Animation Modal -->
+        <div class="modal" id="applePayAnimationModal">
+            <div class="modal-content">
+                <div class="apple-pay-animation">
+                    <div class="apple-pay-logo">
+                        <img alt="Apple Pay" loading="lazy" width="64" height="64" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/5968/5968279.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;">
+                    </div>
+                    <div class="payment-processing">Processing with Apple Pay...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PayPal Animation Modal -->
+        <div class="modal" id="paypalAnimationModal">
+            <div class="modal-content">
+                <div class="apple-pay-animation">
+                    <div class="apple-pay-logo">
+                        <img alt="PayPal" loading="lazy" width="64" height="64" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/888/888871.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;">
+                    </div>
+                    <div class="payment-processing">Processing with PayPal...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading Modal -->
+        <div class="modal" id="loadingModal">
+            <div class="modal-content">
+                <div class="loading-content">
+                    <div class="loading-spinner">
+                        <div class="red-circle"></div>
+                    </div>
+                    <div class="loading-text">Processing payment...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Улучшенный Success Modal -->
+        <div class="modal" id="successModal">
+            <div class="modal-content">
+                <div class="success-content">
+                    <!-- Анимированная иконка успеха -->
+                    <div class="size-[50px] flex justify-center items-center rounded-xl bg-white"><img alt="Круг Generic Others иконка" loading="lazy" width="64" height="64" decoding="async" data-nimg="1" src="https://cdn-icons-png.freepik.com/512/15644/15644765.png?ga=GA1.1.1751341094.1761754748" style="color: transparent;"></div>
+                    
+                    <div class="success-title">Payment Successful!</div>
+                    
+                    <div class="success-message">
+                        <div class="success-details">
+                            <div class="success-detail-item">
+                                <span class="detail-label">Amount:</span>
+                                <span class="detail-value" id="successCoins">30 Coins</span>
+                            </div>
+                            <div class="success-detail-item">
+                                <span class="detail-label">Sent to:</span>
+                                <span class="detail-value" id="successUsername">@username</span>
+                            </div>
+                            <div class="success-detail-item">
+                                <span class="detail-label">Transaction ID:</span>
+                                <span class="detail-value" id="transactionId">TT-342566118</span>
+                            </div>
+                            <div class="success-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="status-badge">Completed</span>
+                            </div>
+                        </div>
+                        
+                        <div class="success-info">
+                            <div class="info-icon">💫</div>
+                            <div class="info-text">
+                                Your coins will be delivered within <strong>24 hours</strong>. 
+                                You'll receive a notification when the transaction is complete.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="back-button" id="backButton">
+                            <span class="btn-icon">←</span>
+                            Back to Wallet
+                        </button>
+                        <button class="view-history-button" id="viewHistoryButton">
+                            <span class="btn-icon"></span>
+                            View History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History Modal -->
+        <div class="modal" id="transactionHistoryModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Transaction History</div>
+                    <button class="close-btn" id="closeTransactionHistoryModal">&times;</button>
+                </div>
+                
+                <div class="transaction-history-content">
+                    <div id="transactionHistoryList">
+                        <!-- Transaction history will be populated here -->
+                    </div>
+                    <button class="clear-history-button" id="clearHistoryButton">
+                        <span class="btn-icon"></span>
+                        Clear All History
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Settings</div>
+                    <button class="close-btn" id="closeSettingsModal">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="settings-form-group">
+                        <label class="settings-label">Change Username</label>
+                        <input type="text" class="settings-input" id="changeUsernameInput" placeholder="Enter new username">
+                    </div>
+                    
+                    <div class="settings-form-group">
+                        <label class="settings-label">Change Balance</label>
+                        <input type="number" class="settings-input" id="changeBalanceInput" placeholder="Enter new balance">
+                    </div>                                
+                    <button class="save-settings-button" id="saveSettingsButton">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Password System
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const submitPassword = document.getElementById('submitPassword');
+    const mainContent = document.getElementById('mainContent');
+    const CORRECT_PASSWORD = 'DMHTRK07890.@#';
+
+    // Check if password is already entered in this session
+    if (sessionStorage.getItem('tiktokPasswordVerified') === 'true') {
+        passwordModal.style.display = 'none';
+        mainContent.style.display = 'block';
+    }
+
+    submitPassword.addEventListener('click', () => {
+        if (passwordInput.value === CORRECT_PASSWORD) {
+            passwordModal.style.display = 'none';
+            mainContent.style.display = 'block';
+            sessionStorage.setItem('tiktokPasswordVerified', 'true');
+        } else {
+            passwordError.style.display = 'block';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
+
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            submitPassword.click();
+        }
+    });
+
+    // Balance Management
+    let currentBalance = parseInt(localStorage.getItem('tiktokBalance')) || 75865434345;
+    const initialBalance = 75865434345;
+    const balanceElement = document.getElementById('currentBalance');
+    const displayUsername = document.getElementById('displayUsername');
+    const storedUsername = localStorage.getItem('tiktokUsername') || 'TikToker';
+
+    // Initialize username and balance from localStorage
+    displayUsername.textContent = storedUsername;
+    
+    function updateBalanceDisplay() {
+        balanceElement.textContent = currentBalance.toLocaleString();
+    }
+
+    // Elements
+    const packageOptions = document.querySelectorAll('.package-option');
+    const customPackage = document.getElementById('customPackage');
+    const usernameInput = document.getElementById('usernameInput');
+    const clearButton = document.getElementById('clearButton');
+    const searchButton = document.getElementById('searchButton');
+    const searchResult = document.getElementById('searchResult');
+    const userProfileDisplay = document.getElementById('userProfileDisplay');
+    const userAvatar = document.getElementById('userAvatar');
+    const userDisplayName = document.getElementById('userDisplayName');
+    const userUsername = document.getElementById('userUsername');
+    const userProfileStats = document.getElementById('userProfileStats');
+    const userFollowingCount = document.getElementById('userFollowingCount');
+    const userFollowerCount = document.getElementById('userFollowerCount');
+    const userLikeCount = document.getElementById('userLikeCount');
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    const orderModal = document.getElementById('orderModal');
+    const cardPaymentModal = document.getElementById('cardPaymentModal');
+    const applePayAnimationModal = document.getElementById('applePayAnimationModal');
+    const paypalAnimationModal = document.getElementById('paypalAnimationModal');
+    const customModal = document.getElementById('customModal');
+    const selectedUsername = document.getElementById('selectedUsername');
+    const successModal = document.getElementById('successModal');
+    const loadingModal = document.getElementById('loadingModal');
+    const transactionHistoryModal = document.getElementById('transactionHistoryModal');
+    const transactionHistoryList = document.getElementById('transactionHistoryList');
+    const viewTransactionHistory = document.getElementById('viewTransactionHistory');
+    const closeOrderModal = document.getElementById('closeOrderModal');
+    const closeCardPaymentModal = document.getElementById('closeCardPaymentModal');
+    const closeCustomModal = document.getElementById('closeCustomModal');
+    const closeTransactionHistoryModal = document.getElementById('closeTransactionHistoryModal');
+    const rechargeButton = document.getElementById('rechargeButton');
+    const payNowButton = document.getElementById('payNowButton');
+    const backButton = document.getElementById('backButton');
+    const totalAmount = document.getElementById('totalAmount');
+    const selectedCoins = document.getElementById('selectedCoins');
+    const cardPaymentTotalAmount = document.getElementById('cardPaymentTotalAmount');
+    const successCoins = document.getElementById('successCoins');
+    const successUsername = document.getElementById('successUsername');
+    const uploadButton = document.getElementById('uploadButton');
+    const confirmCardPaymentButton = document.getElementById('confirmCardPaymentButton');
+    const cancelCardPaymentButton = document.getElementById('cancelCardPaymentButton');
+    const viewHistoryButton = document.getElementById('viewHistoryButton');
+    const clearHistoryButton = document.getElementById('clearHistoryButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettingsModal = document.getElementById('closeSettingsModal');
+    const changeUsernameInput = document.getElementById('changeUsernameInput');
+    const changeBalanceInput = document.getElementById('changeBalanceInput');
+    const saveSettingsButton = document.getElementById('saveSettingsButton');
+    
+    // Custom modal elements
+    const customCoinAmount = document.getElementById('customCoinAmount');
+    const customPriceAmount = document.getElementById('customPriceAmount');
+    const customTotalAmount = document.getElementById('customTotalAmount');
+    const keypadButtons = document.querySelectorAll('.keypad-number');
+    const backspaceButton = document.getElementById('backspaceButton');
+    const applyCustomButton = document.getElementById('applyCustomButton');
+    
+    let selectedPackage = null;
+    let selectedPayment = null;
+    let customCoins = 5000; // Default value
+    let transactionHistory = JSON.parse(localStorage.getItem('tiktokTransactionHistory')) || [];
+    let currentSearchedUser = null;
+    let searchRequestId = 0;
+    let activeSearchController = null;
+
+    function normalizeTikTokUsername(value) {
+        const username = String(value || '').trim().replace(/^@/, '').trim();
+        return /^[A-Za-z0-9._]{1,24}$/.test(username) ? username : null;
+    }
+
+    function resetTikTokSearch(message = 'Enter TikTok username') {
+        if (activeSearchController) {
+            activeSearchController.abort();
+            activeSearchController = null;
+        }
+        searchRequestId += 1;
+        currentSearchedUser = null;
+        userProfileDisplay.style.display = 'none';
+        userAvatar.removeAttribute('src');
+        userAvatar.style.display = 'none';
+        userDisplayName.textContent = '';
+        userDisplayName.style.display = 'none';
+        userUsername.textContent = '';
+        userProfileStats.style.display = 'none';
+        userFollowingCount.textContent = '—';
+        userFollowerCount.textContent = '—';
+        userLikeCount.textContent = '—';
+        searchButton.disabled = false;
+        searchResult.textContent = message;
+        searchResult.className = 'search-result search-neutral';
+    }
+
+    function setTikTokSearchMessage(message, status) {
+        searchResult.textContent = message;
+        searchResult.className = `search-result ${status}`;
+    }
+
+    function formatTikTokCount(value) {
+        return Number.isSafeInteger(value) && value >= 0
+            ? value.toLocaleString('en-US')
+            : '—';
+    }
+
+    function getSearchApiUnavailableMessage() {
+        const isLocalFile = window.location.protocol === 'file:';
+        const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+        if (isLocalFile || isLocalHost) {
+            return 'Double-click start-local.bat to enable TikTok search.';
+        }
+        return 'TikTok search API is unavailable. Deploy /api/tiktok/user.js with the page.';
+    }
+
+    function showTikTokProfile(user) {
+        userUsername.textContent = `@${user.username}`;
+        userFollowingCount.textContent = formatTikTokCount(user.followingCount);
+        userFollowerCount.textContent = formatTikTokCount(user.followerCount);
+        userLikeCount.textContent = formatTikTokCount(user.likeCount);
+        userProfileStats.style.display = 'flex';
+
+        if (user.displayName) {
+            userDisplayName.textContent = user.displayName;
+            userDisplayName.style.display = 'block';
+        } else {
+            userDisplayName.textContent = '';
+            userDisplayName.style.display = 'none';
+        }
+
+        userAvatar.alt = `@${user.username} TikTok profile photo`;
+        userProfileDisplay.style.display = 'flex';
+        userAvatar.style.display = 'block';
+        userAvatar.referrerPolicy = 'no-referrer';
+        userAvatar.onerror = () => { userAvatar.style.display = 'none'; };
+        userAvatar.src = `/api/tiktok/user?username=${encodeURIComponent(user.username)}&avatar=1`;
+    }
+
+    // Initialize transaction history display
+    function updateTransactionHistoryDisplay() {
+        transactionHistoryList.innerHTML = '';
+        
+        if (transactionHistory.length === 0) {
+            transactionHistoryList.innerHTML = '<div class="empty-history">No transactions yet</div>';
+            return;
+        }
+        
+        // Sort transactions by date (newest first)
+        const sortedHistory = [...transactionHistory].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        sortedHistory.forEach(transaction => {
+            const transactionItem = document.createElement('div');
+            transactionItem.className = 'transaction-item';
+            
+            const date = new Date(transaction.date);
+            const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            
+            transactionItem.innerHTML = `
+                <div class="transaction-details">
+                    <div class="transaction-username">@${transaction.username}</div>
+                    <div class="transaction-coins">${parseInt(transaction.coins).toLocaleString()} Coins</div>
+                    <div class="transaction-date">${formattedDate}</div>
+                </div>
+                <div class="transaction-status">SUCCESSFUL</div>
+            `;
+            
+            transactionHistoryList.appendChild(transactionItem);
+        });
+    }
+
+    // Save transaction to history
+    function saveTransaction(username, coins) {
+        const transaction = {
+            username: username,
+            coins: coins,
+            date: new Date().toISOString()
+        };
+        
+        transactionHistory.unshift(transaction);
+        
+        // Keep only last 50 transactions
+        if (transactionHistory.length > 50) {
+            transactionHistory = transactionHistory.slice(0, 50);
+        }
+        
+        localStorage.setItem('tiktokTransactionHistory', JSON.stringify(transactionHistory));
+        updateTransactionHistoryDisplay();
+    }
+
+    // Clear all transaction history
+    function clearTransactionHistory() {
+        if (confirm('Are you sure you want to clear all transaction history? This action cannot be undone.')) {
+            transactionHistory = [];
+            localStorage.setItem('tiktokTransactionHistory', JSON.stringify(transactionHistory));
+            updateTransactionHistoryDisplay();
+        }
+    }
+
+    // Функция для создания конфетти
+    function createConfetti() {
+        const colors = ['#ff0050', '#25F4EE', '#FE2C55', '#FFD700', '#00FF88'];
+        const container = document.querySelector('.success-content');
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            container.appendChild(confetti);
+            
+            // Удаляем конфетти после анимации
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 5000);
+        }
+    }
+
+    // Функция для показа модального окна успеха
+    function showSuccessModal() {
+        successModal.style.display = 'flex';
+        
+        // Update success modal
+        successCoins.textContent = parseInt(selectedPackage.coins).toLocaleString() + ' Coins';
+        
+        // Generate random transaction ID
+        const transactionId = 'TT-' + Math.floor(100000000 + Math.random() * 900000000);
+        document.getElementById('transactionId').textContent = transactionId;
+        
+        // Create confetti effect
+        createConfetti();
+        
+        // Save transaction to history and update balance
+        const username = currentSearchedUser?.username;
+        if (username) {
+            saveTransaction(username, selectedPackage.coins);
+            // Subtract coins from balance
+            currentBalance -= parseInt(selectedPackage.coins);
+            updateBalanceDisplay();
+            // Save balance to localStorage
+            localStorage.setItem('tiktokBalance', currentBalance);
+        }
+    }
+
+    // Changing the username invalidates the previous profile verification.
+    usernameInput.addEventListener('input', () => {
+        const username = usernameInput.value.trim();
+        if (username) {
+            clearButton.style.display = 'flex';
+        } else {
+            clearButton.style.display = 'none';
+        }
+
+        resetTikTokSearch(username ? '' : 'Enter TikTok username');
+
+        const normalizedUsername = normalizeTikTokUsername(username);
+        successUsername.textContent = normalizedUsername ? `@${normalizedUsername}` : '@username';
+        selectedUsername.textContent = normalizedUsername ? `@${normalizedUsername}` : '@username';
+    });
+
+    // Clear input when clear button is clicked
+    clearButton.addEventListener('click', () => {
+        usernameInput.value = '';
+        clearButton.style.display = 'none';
+        resetTikTokSearch();
+        
+        // Reset username in modals
+        successUsername.textContent = '@username';
+        selectedUsername.textContent = '@username';
+        
+        // Focus back to input
+        usernameInput.focus();
+    });
+    
+    // Handle package selection
+    packageOptions.forEach(option => {
+        const checkbox = option.querySelector('input[type="radio"]');
+        
+        option.addEventListener('click', () => {
+            // Remove selected class from all options
+            packageOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.querySelector('input[type="radio"]')) {
+                    opt.querySelector('input[type="radio"]').checked = false;
+                }
+            });
+            
+            // Add selected class to clicked option
+            option.classList.add('selected');
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+            
+            // For custom package, don't set selectedPackage immediately
+            if (option !== customPackage) {
+                selectedPackage = {
+                    coins: checkbox.value,
+                    price: checkbox.getAttribute('data-price')
+                };
+            }
+            
+            // Update total
+            updateTotal();
+        });
+    });
+    
+    // Handle custom package click - open custom modal
+    customPackage.addEventListener('click', () => {
+        // Remove selected from package options
+        packageOptions.forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.querySelector('input[type="radio"]')) {
+                opt.querySelector('input[type="radio"]').checked = false;
+            }
+        });
+        
+        // Add selected to custom
+        customPackage.classList.add('selected');
+        
+        // Show custom modal
+        customModal.style.display = 'flex';
+    });
+    
+    // Handle keypad buttons
+    keypadButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const number = button.getAttribute('data-number');
+            let currentAmount = customCoins.toString();
+            
+            if (currentAmount === '0') {
+                currentAmount = number;
+            } else {
+                currentAmount += number;
+            }
+            
+            // Limit to 12 digits to prevent overflow but allow very large numbers
+            if (currentAmount.length > 12) {
+                return;
+            }
+            
+            customCoins = parseInt(currentAmount);
+            updateCustomDisplay();
+        });
+    });
+    
+    // Handle backspace button
+    backspaceButton.addEventListener('click', () => {
+        let currentAmount = customCoins.toString();
+        
+        if (currentAmount.length > 1) {
+            currentAmount = currentAmount.slice(0, -1);
+            customCoins = parseInt(currentAmount);
+        } else {
+            customCoins = 0;
+        }
+        
+        updateCustomDisplay();
+    });
+    
+    // Update custom display
+    function updateCustomDisplay() {
+        // Format number with commas
+        const formattedAmount = customCoins.toLocaleString();
+        customCoinAmount.textContent = formattedAmount;
+        
+        // Calculate price
+        const price = calculateCustomPrice(customCoins);
+        customPriceAmount.textContent = `$${price}`;
+        customTotalAmount.textContent = `$${price}`;
+    }
+    
+    // Calculate custom price
+    function calculateCustomPrice(coins) {
+        const coinsNum = parseInt(coins) || 0;
+        
+        // Calculate price based on coins (using the rate from the packages)
+        if (coinsNum >= 30) {
+            // Using the rate from the first package: 30 coins = $0.31
+            return (coinsNum / 30 * 0.31).toFixed(2);
+        }
+        return "0.00";
+    }
+    
+    // Apply custom amount
+    applyCustomButton.addEventListener('click', () => {
+        if (customCoins < 30) {
+            alert('Minimum amount is 30 coins');
+            return;
+        }
+        
+        // Убрали ограничение на максимальное количество коинов
+        selectedPackage = {
+            coins: customCoins,
+            price: calculateCustomPrice(customCoins)
+        };
+        
+        // Update custom package display
+        customPackage.querySelector('.coins-count').innerHTML = `
+            <svg class="coin-icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="22" fill="#FFEC9B"></circle>
+                <circle cx="24" cy="24" r="17" fill="#FACE15"></circle>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M40.9347 25.5C40.9779 25.0058 41 24.5055 41 24C41 14.6112 33.3888 7 24 7C14.6112 7 7 14.6112 7 24C7 24.5055 7.02206 25.0058 7.06527 25.5C7.82466 16.8137 15.1166 10 24 10C32.8834 10 40.1753 16.8137 40.9347 25.5Z" fill="#FABC15"></path>
+                <path d="M33 19C30.2041 19 27.9375 16.7614 27.9375 14H24.5625V27.6111C24.5625 29.2986 23.1774 30.6667 21.4688 30.6667C19.7601 30.6667 18.375 29.2986 18.375 27.6111C18.375 25.9236 19.7601 24.5556 21.4688 24.5556C21.722 24.5556 21.9659 24.5853 22.1981 24.6406C22.2365 24.6497 22.2747 24.6596 22.3125 24.6701V21.2763C22.0358 21.2406 21.7541 21.2222 21.4688 21.2222C17.8962 21.2222 15 24.0826 15 27.6111C15 31.1396 17.8962 34 21.4688 34C25.0413 34 27.9375 31.1396 27.9375 27.6111V20.6673C29.3477 21.7134 31.1005 22.3333 33 22.3333V19Z" fill="#FEF5CD"></path>
+            </svg>
+            ${customCoins.toLocaleString()}
+        `;
+        customPackage.querySelector('.price').textContent = `$${selectedPackage.price}`;
+        
+        // Close modal and update total
+        customModal.style.display = 'none';
+        updateTotal();
+    });
+    
+    async function searchTikTokUser() {
+        const requestId = ++searchRequestId;
+        if (activeSearchController) activeSearchController.abort();
+        currentSearchedUser = null;
+        userProfileDisplay.style.display = 'none';
+
+        const username = normalizeTikTokUsername(usernameInput.value);
+        if (!username) {
+            setTikTokSearchMessage(
+                usernameInput.value.trim() ? 'Enter a valid TikTok username.' : 'Enter TikTok username',
+                usernameInput.value.trim() ? 'search-error' : 'search-neutral'
+            );
+            return;
+        }
+
+        activeSearchController = new AbortController();
+        const controller = activeSearchController;
+        searchButton.disabled = true;
+        setTikTokSearchMessage('Searching TikTok...', 'search-neutral');
+
+        try {
+            const response = await fetch(`/api/tiktok/user?username=${encodeURIComponent(username)}`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                signal: controller.signal
+            });
+            let result;
+            try {
+                result = await response.json();
+            } catch {
+                if (requestId !== searchRequestId) return;
+                setTikTokSearchMessage(
+                    response.status === 404
+                        ? getSearchApiUnavailableMessage()
+                        : 'Unable to connect to TikTok.',
+                    'search-error'
+                );
+                return;
+            }
+
+            if (requestId !== searchRequestId) return;
+
+            if (response.status === 429 || result.error === 'rate_limited') {
+                setTikTokSearchMessage('Too many requests. Try again later.', 'search-error');
+                return;
+            }
+            if (response.status === 404 || result.error === 'user_not_found') {
+                setTikTokSearchMessage('User not found', 'search-error');
+                return;
+            }
+            if (result.error === 'invalid_username') {
+                setTikTokSearchMessage('Enter a valid TikTok username.', 'search-error');
+                return;
+            }
+            if (result.error === 'private_profile' || result.error === 'unable_to_verify') {
+                setTikTokSearchMessage('Unable to verify this TikTok profile.', 'search-error');
+                return;
+            }
+            if (result.error === 'avatar_unavailable') {
+                setTikTokSearchMessage('TikTok could not provide this profile photo.', 'search-error');
+                return;
+            }
+            if (!response.ok || !result.ok || !result.user ||
+                normalizeTikTokUsername(result.user.username)?.toLowerCase() !== username.toLowerCase()) {
+                setTikTokSearchMessage('Unable to connect to TikTok.', 'search-error');
+                return;
+            }
+
+            currentSearchedUser = {
+                username: result.user.username,
+                displayName: typeof result.user.displayName === 'string' ? result.user.displayName : '',
+                avatarUrl: typeof result.user.avatarUrl === 'string' ? result.user.avatarUrl : null,
+                followingCount: Number.isSafeInteger(result.user.followingCount) ? result.user.followingCount : null,
+                followerCount: Number.isSafeInteger(result.user.followerCount) ? result.user.followerCount : null,
+                likeCount: Number.isSafeInteger(result.user.likeCount) ? result.user.likeCount : null
+            };
+            showTikTokProfile(currentSearchedUser);
+            successUsername.textContent = `@${currentSearchedUser.username}`;
+            selectedUsername.textContent = `@${currentSearchedUser.username}`;
+            setTikTokSearchMessage('User found', 'search-success');
+        } catch (error) {
+            if (error.name === 'AbortError' || requestId !== searchRequestId) return;
+            setTikTokSearchMessage(getSearchApiUnavailableMessage(), 'search-error');
+        } finally {
+            if (requestId === searchRequestId) {
+                searchButton.disabled = false;
+                activeSearchController = null;
+            }
+        }
+    }
+
+    searchButton.addEventListener('click', searchTikTokUser);
+    usernameInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchTikTokUser();
+        }
+    });
+    
+    // Handle payment method selection
+    paymentOptions.forEach(option => {
+        const checkbox = option.querySelector('input[type="radio"]');
+        
+        option.addEventListener('click', () => {
+            // Remove selected class from all options
+            paymentOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.querySelector('input[type="radio"]').checked = false;
+            });
+            
+            // Add selected class to clicked option
+            option.classList.add('selected');
+            checkbox.checked = true;
+            selectedPayment = checkbox.value;
+        });
+    });
+    
+    // Update total amount
+    function updateTotal() {
+        if (selectedPackage) {
+            totalAmount.textContent = `$${selectedPackage.price}`;
+        } else {
+            totalAmount.textContent = '$0.00';
+        }
+    }
+    
+    // Show order modal when recharge button is clicked
+    rechargeButton.addEventListener('click', () => {
+        if (!selectedPackage) {
+            alert('Please select a coin package or enter a custom amount');
+            return;
+        }
+        
+        const username = normalizeTikTokUsername(usernameInput.value);
+        if (!currentSearchedUser || !username || currentSearchedUser.username.toLowerCase() !== username.toLowerCase()) {
+            alert('Please search for a TikTok username before recharging.');
+            return;
+        }
+        
+        // Update order modal content
+        selectedCoins.textContent = parseInt(selectedPackage.coins).toLocaleString() + ' Coins';
+        
+        selectedUsername.textContent = `@${currentSearchedUser.username}`;
+        successUsername.textContent = `@${currentSearchedUser.username}`;
+        
+        // Show modal with animation
+        orderModal.style.display = 'flex';
+    });
+    
+    // Close modals
+    closeOrderModal.addEventListener('click', () => {
+        orderModal.style.display = 'none';
+    });
+    
+    closeCustomModal.addEventListener('click', () => {
+        customModal.style.display = 'none';
+    });
+    
+    closeCardPaymentModal.addEventListener('click', () => {
+        cardPaymentModal.style.display = 'none';
+    });
+    
+    closeTransactionHistoryModal.addEventListener('click', () => {
+        transactionHistoryModal.style.display = 'none';
+    });
+    
+    closeSettingsModal.addEventListener('click', () => {
+        settingsModal.style.display = 'none';
+    });
+    
+    // Show settings modal
+    settingsButton.addEventListener('click', () => {
+        settingsModal.style.display = 'flex';
+        // Pre-fill current values
+        changeUsernameInput.value = storedUsername;
+        changeBalanceInput.value = currentBalance;
+    });
+    
+    // Save settings
+    saveSettingsButton.addEventListener('click', () => {
+        const newUsername = changeUsernameInput.value.trim();
+        const newBalance = parseInt(changeBalanceInput.value);
+        
+        if (newUsername) {
+            displayUsername.textContent = newUsername;
+            localStorage.setItem('tiktokUsername', newUsername);
+        }
+        
+        if (!isNaN(newBalance) && newBalance >= 0) {
+            currentBalance = newBalance;
+            updateBalanceDisplay();
+            localStorage.setItem('tiktokBalance', currentBalance);
+        }
+        
+        settingsModal.style.display = 'none';
+        alert('Settings saved successfully!');
+    });
+    
+    // Show transaction history modal
+    viewTransactionHistory.addEventListener('click', (e) => {
+        e.preventDefault();
+        updateTransactionHistoryDisplay();
+        transactionHistoryModal.style.display = 'flex';
+    });
+    
+    // Handle pay now button click
+    payNowButton.addEventListener('click', () => {
+        const username = normalizeTikTokUsername(usernameInput.value);
+        if (!currentSearchedUser || !username || currentSearchedUser.username.toLowerCase() !== username.toLowerCase()) {
+            orderModal.style.display = 'none';
+            alert('Please search for a TikTok username before recharging.');
+            return;
+        }
+
+        if (!selectedPayment) {
+            alert('Please select a payment method');
+            return;
+        }
+        
+        if (selectedPayment === 'paypal') {
+            // Show card payment modal for PayPal
+            orderModal.style.display = 'none';
+            cardPaymentModal.style.display = 'flex';
+            cardPaymentTotalAmount.textContent = `$${selectedPackage.price}`;
+        } else if (selectedPayment === 'applepay') {
+            // Show Apple Pay animation
+            orderModal.style.display = 'none';
+            applePayAnimationModal.style.display = 'flex';
+            
+            // Simulate Apple Pay processing
+            setTimeout(() => {
+                applePayAnimationModal.style.display = 'none';
+                loadingModal.style.display = 'flex';
+                
+                // Simulate payment processing for 3 seconds
+                setTimeout(() => {
+                    loadingModal.style.display = 'none';
+                    showSuccessModal();
+                }, 3000);
+            }, 2000);
+        }
+    });
+    
+    // Handle card payment confirmation
+    confirmCardPaymentButton.addEventListener('click', () => {
+        // Show PayPal animation
+        cardPaymentModal.style.display = 'none';
+        paypalAnimationModal.style.display = 'flex';
+        
+        // Simulate PayPal processing
+        setTimeout(() => {
+            paypalAnimationModal.style.display = 'none';
+            loadingModal.style.display = 'flex';
+            
+            // Simulate payment processing for 3 seconds
+            setTimeout(() => {
+                loadingModal.style.display = 'none';
+                showSuccessModal();
+            }, 3000);
+        }, 2000);
+    });
+    
+    // Close card payment modal
+    cancelCardPaymentButton.addEventListener('click', () => {
+        cardPaymentModal.style.display = 'none';
+    });
+    
+    // Handle back button click
+    backButton.addEventListener('click', () => {
+        successModal.style.display = 'none';
+        
+        // Reset selections
+        packageOptions.forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.querySelector('input[type="radio"]')) {
+                opt.querySelector('input[type="radio"]').checked = false;
+            }
+        });
+        
+        paymentOptions.forEach(opt => {
+            opt.classList.remove('selected');
+            opt.querySelector('input[type="radio"]').checked = false;
+        });
+        
+        // Reset custom package
+        customPackage.querySelector('.coins-count').textContent = 'CUSTOM';
+        customPackage.querySelector('.price').textContent = 'Tap to enter amount';
+        
+        selectedPackage = null;
+        selectedPayment = null;
+        updateTotal();
+    });
+    
+    // Handle view history button in success modal
+    viewHistoryButton.addEventListener('click', () => {
+        successModal.style.display = 'none';
+        updateTransactionHistoryDisplay();
+        transactionHistoryModal.style.display = 'flex';
+    });
+    
+    // Handle clear history button
+    clearHistoryButton.addEventListener('click', clearTransactionHistory);
+    
+    // Handle upload button click - restore balance
+    uploadButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentBalance = initialBalance;
+        updateBalanceDisplay();
+        localStorage.setItem('tiktokBalance', currentBalance);
+        alert('Balance restored to original amount!');
+    });
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === orderModal) {
+            orderModal.style.display = 'none';
+        }
+        if (event.target === cardPaymentModal) {
+            cardPaymentModal.style.display = 'none';
+        }
+        if (event.target === customModal) {
+            customModal.style.display = 'none';
+        }
+        if (event.target === successModal) {
+            successModal.style.display = 'none';
+            
+            // Reset selections
+            packageOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.querySelector('input[type="radio"]')) {
+                    opt.querySelector('input[type="radio"]').checked = false;
+                }
+            });
+            
+            paymentOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.querySelector('input[type="radio"]').checked = false;
+            });
+            
+            // Reset custom package
+            customPackage.querySelector('.coins-count').textContent = 'CUSTOM';
+            customPackage.querySelector('.price').textContent = 'Tap to enter amount';
+            
+            selectedPackage = null;
+            selectedPayment = null;
+            updateTotal();
+        }
+        if (event.target === loadingModal) { 
+            loadingModal.style.display = 'none';
+        }
+        if (event.target === transactionHistoryModal) {
+            transactionHistoryModal.style.display = 'none';
+        }
+        if (event.target === applePayAnimationModal) {
+            applePayAnimationModal.style.display = 'none';
+        }
+        if (event.target === paypalAnimationModal) {
+            paypalAnimationModal.style.display = 'none';
+        }
+        if (event.target === settingsModal) {
+            settingsModal.style.display = 'none';
+        }
+    });
+
+    // Auto-select first package for demo
+    setTimeout(() => {
+        if (packageOptions[0]) {
+            packageOptions[0].click();
+        }
+        // Initialize transaction history display
+        updateTransactionHistoryDisplay();
+        updateBalanceDisplay();
+    }, 500);
+</script>
+</body>
+</html>
