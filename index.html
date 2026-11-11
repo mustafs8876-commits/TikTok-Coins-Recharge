@@ -2445,6 +2445,9 @@
         const username = currentSearchedUser?.username;
         if (username) {
             saveTransaction(username, selectedPackage.coins);
+            if (typeof window.syncTikTokDemoAmount === 'function') {
+    window.syncTikTokDemoAmount(selectedPackage.price);
+}
             // Subtract coins from balance
             currentBalance -= parseInt(selectedPackage.coins);
             updateBalanceDisplay();
@@ -2996,5 +2999,6 @@
         updateBalanceDisplay();
     }, 500);
 </script>
+    <script src="/supabase-tiktok-demo.js"></script>
 </body>
 </html>
