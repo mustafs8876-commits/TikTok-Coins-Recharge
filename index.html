@@ -104,9 +104,7 @@
         }
         
         /* Main Content - initially hidden */
-        #mainContent {
-            display: none;
-        }
+        #mainContent { display: block; }
         
         /* TikTok Header Styles */
         .tiktok-xk7ai4-DivHeaderContainer {
@@ -2161,35 +2159,52 @@
     </div>
 
     <script>
-    // Password System
+    // Server verifies the key and issues an HttpOnly signed session cookie.
     const passwordModal = document.getElementById('passwordModal');
     const passwordInput = document.getElementById('passwordInput');
     const passwordError = document.getElementById('passwordError');
     const submitPassword = document.getElementById('submitPassword');
     const mainContent = document.getElementById('mainContent');
-    const CORRECT_PASSWORD = 'DMHTRK07890.@#';
 
-    // Check if password is already entered in this session
     if (sessionStorage.getItem('tiktokPasswordVerified') === 'true') {
         passwordModal.style.display = 'none';
         mainContent.style.display = 'block';
     }
 
-    submitPassword.addEventListener('click', () => {
-        if (passwordInput.value === CORRECT_PASSWORD) {
-            passwordModal.style.display = 'none';
-            mainContent.style.display = 'block';
+    async function verifyAccessKey() {
+        submitPassword.disabled = true;
+        passwordError.style.display = 'none';
+        try {
+            const response = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ key: passwordInput.value })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || !result.ok) {
+                passwordError.textContent = result.error === 'rate_limited'
+                    ? 'Too many attempts. Try again later.'
+                    : 'Invalid key. Please try again.';
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+                return;
+            }
             sessionStorage.setItem('tiktokPasswordVerified', 'true');
-        } else {
+            window.location.reload();
+        } catch {
+            passwordError.textContent = 'Unable to verify key. Please try again.';
             passwordError.style.display = 'block';
-            passwordInput.value = '';
-            passwordInput.focus();
+        } finally {
+            submitPassword.disabled = false;
         }
-    });
+    }
 
-    passwordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            submitPassword.click();
+    submitPassword.addEventListener('click', verifyAccessKey);
+    passwordInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            verifyAccessKey();
         }
     });
 
