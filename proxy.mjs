@@ -7,7 +7,7 @@ function validSession(token, secret) {
   if (dot < 1) return false;
   const expiresAt = token.slice(0, dot);
   const signature = token.slice(dot + 1);
-  if (!/^\\d{13}$/.test(expiresAt) || Number(expiresAt) <= Date.now()) return false;
+  if (!/^\d{13}$/.test(expiresAt) || Number(expiresAt) <= Date.now()) return false;
   const expected = createHmac('sha256', secret).update(expiresAt).digest();
   let supplied;
   try { supplied = Buffer.from(signature, 'hex'); } catch { return false; }
@@ -46,7 +46,7 @@ export default function proxy(request) {
   }
 
   const cookieHeader = request.headers.get('cookie') || '';
-  const match = cookieHeader.match(/(?:^|;\\s*)site_access=([^;]+)/);
+  const match = cookieHeader.match(/(?:^|;\s*)site_access=([^;]+)/);
   if (match && validSession(match[1], secret)) return next();
 
   return new Response(loginPage(), {
