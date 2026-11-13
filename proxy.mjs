@@ -47,7 +47,7 @@ export default function proxy(request) {
 
   const cookieHeader = request.headers.get('cookie') || '';
   const match = cookieHeader.match(/(?:^|;\\s*)site_access=([^;]+)/);
-  if (match && validSession(decodeURIComponent(match[1]), secret)) return next();
+  if (match && validSession(match[1], secret)) return next();
 
   return new Response(loginPage(), {
     status: 401,
