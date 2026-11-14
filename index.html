@@ -3013,6 +3013,188 @@
         updateTransactionHistoryDisplay();
         updateBalanceDisplay();
     }, 500);
+            // Модальное окно выбора аккаунта и изменения баланса монет
+    (function() {
+        const oldModal = document.getElementById('myAccountModal');
+        if (oldModal) oldModal.remove();
+
+        const topProfileCard = document.querySelector('.tiktok-d2sjra-DivProfileInfo');
+        const topProfileAvatar = topProfileCard ? topProfileCard.querySelector('.tiktok-15iwytd-DivProfileContainer') : null;
+        const headerAvatar = document.getElementById('header-more-menu-icon');
+        const defaultAvatar = 'https://wikimedia.org';
+
+        const modalHTML = `
+            <div class="modal" id="myAccountModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Выбор аккаунта и баланса</div>
+                        <button class="close-btn" id="closeMyAccountModal">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="settings-form-group">
+                            <label class="settings-label">Введите ваш @username в TikTok</label>
+                            <input type="text" class="settings-input" id="myAccountSearchInput" placeholder="например, gur_lenv">
+                        </div>
+                        <div class="settings-form-group" style="margin-top: 12px;">
+                            <label class="settings-label">Количество монет</label>
+                            <input type="number" class="settings-input" id="myAccountCoinsInput" placeholder="например, 69521">
+                        </div>
+                        <div id="myAccountSearchStatus" class="search-result search-neutral" style="margin-bottom: 12px; margin-top: 8px;"></div>
+                        <div id="myAccountPreview" class="user-profile-display" style="display: none; margin-bottom: 16px;">
+                            <img id="myAccountPreviewAvatar" class="user-avatar" alt="Avatar" referrerpolicy="no-referrer">
+                            <div class="user-profile-details">
+                                <div id="myAccountPreviewName" class="user-display-name"></div>
+                                <div id="myAccountPreviewHandle" class="user-username"></div>
+                            </div>
+                        </div>
+                        <button class="save-settings-button" id="findMyAccountBtn" style="margin-bottom: 10px; background: #161823;">Найти аккаунт</button>
+                        <button class="save-settings-button" id="confirmMyAccountBtn" style="display: none;">Применить</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('mainContent').insertAdjacentHTML('beforeend', modalHTML);
+
+        const myAccountModal = document.getElementById('myAccountModal');
+        const closeMyAccountModal = document.getElementById('closeMyAccountModal');
+        const myAccountSearchInput = document.getElementById('myAccountSearchInput');
+        const myAccountCoinsInput = document.getElementById('myAccountCoinsInput');
+        const myAccountSearchStatus = document.getElementById('myAccountSearchStatus');
+        const myAccountPreview = document.getElementById('myAccountPreview');
+        const myAccountPreviewAvatar = document.getElementById('myAccountPreviewAvatar');
+        const myAccountPreviewName = document.getElementById('myAccountPreviewName');
+        const myAccountPreviewHandle = document.getElementById('myAccountPreviewHandle');
+        const findMyAccountBtn = document.getElementById('findMyAccountBtn');
+        const confirmMyAccountBtn = document.getElementById('confirmMyAccountBtn');
+        let foundMyAccount = null;
+
+        // Восстановление сохраненной аватарки при загрузке страницы
+        const savedAvatar = localStorage.getItem('tiktokCustomAvatar');
+        if (savedAvatar) {
+            if (topProfileAvatar) topProfileAvatar.style.backgroundImage = `url('${savedAvatar}')`;
+            if (headerAvatar) headerAvatar.style.backgroundImage = `url('${savedAvatar}')`;
+        }
+
+        if (topProfileCard) {
+            topProfileCard.style.cursor = 'pointer';
+            topProfileCard.onclick = () => {
+                foundMyAccount = null;
+                myAccountSearchStatus.textContent = '';
+                myAccountPreview.style.display = 'none';
+                confirmMyAccountBtn.style.display = 'none';
+                myAccountSearchInput.value = localStorage.getItem('tiktokUsername') || '';
+                myAccountCoinsInput.value = currentBalance;
+                myAccountModal.style.display = 'flex';
+                myAccountSearchInput.focus();
+            };
+        }
+
+        closeMyAccountModal.onclick = () => myAccountModal.style.display = 'none';
+        window.addEventListener('click', (e) => { if (e.target === myAccountModal) myAccountModal.style.display = 'none'; });
+
+        async function findMyTikTokProfile() {
+            const raw = myAccountSearchInput.value.trim().replace(/^@/, '');
+            if (!raw) {
+                myAccountSearchStatus.textContent = 'Введите никнейм';
+                myAccountSearchStatus.className = 'search-result search-error';
+                return;
+            }
+            findMyAccountBtn.disabled = true;
+            foundMyAccount = null;
+            myAccountSearchStatus.textContent = 'Поиск аккаунта...';
+            myAccountSearchStatus.className = 'search-result search-neutral';
+            myAccountPreview.style.display = 'none';
+            confirmMyAccountBtn.style.display = 'none';
+
+            try {
+                const apiRes = await fetch(`/api/tiktok/user?username=${encodeURIComponent(raw)}`);
+                if (apiRes.ok) {
+                    const apiData = await apiRes.json();
+                    if (apiData.ok && apiData.user) {
+                        foundMyAccount = {
+                            username: apiData.user.username,
+                            displayName: apiData.user.displayName || apiData.user.username,
+                            avatarUrl: `/api/tiktok/user?username=${encodeURIComponent(apiData.user.username)}&avatar=1`
+                        };
+                    }
+                }
+
+                if (!foundMyAccount) {
+                    const profileUrl = `https://tiktok.com{encodeURIComponent(raw)}`;
+                    const res = await fetch(`https://tiktok.com{encodeURIComponent(profileUrl)}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        foundMyAccount = {
+                            username: data.author_unique_id || raw,
+                            displayName: data.author_name || raw,
+                            avatarUrl: data.thumbnail_url || defaultAvatar
+                        };
+                    }
+                }
+
+                if (!foundMyAccount) {
+                    foundMyAccount = {
+                        username: raw,
+                        displayName: raw,
+                        avatarUrl: defaultAvatar
+                    };
+                    myAccountSearchStatus.textContent = 'Профиль закрыт или скрыт, но вы можете выбрать его';
+                    myAccountSearchStatus.className = 'search-result search-neutral';
+                } else {
+                    myAccountSearchStatus.textContent = 'Аккаунт найден';
+                    myAccountSearchStatus.className = 'search-result search-success';
+                }
+            } catch (e) {
+                foundMyAccount = {
+                    username: raw,
+                    displayName: raw,
+                    avatarUrl: defaultAvatar
+                };
+                myAccountSearchStatus.textContent = 'Не удалось загрузить данные, но вы можете выбрать этот ник';
+                myAccountSearchStatus.className = 'search-result search-neutral';
+            } finally {
+                findMyAccountBtn.disabled = false;
+                if (foundMyAccount) {
+                    myAccountPreviewName.textContent = foundMyAccount.displayName;
+                    myAccountPreviewHandle.textContent = `@${foundMyAccount.username}`;
+                    myAccountPreviewAvatar.src = foundMyAccount.avatarUrl;
+                    myAccountPreviewAvatar.style.display = 'block';
+                    myAccountPreview.style.display = 'flex';
+                    confirmMyAccountBtn.style.display = 'block';
+                }
+            }
+        }
+
+        findMyAccountBtn.onclick = findMyTikTokProfile;
+        myAccountSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') findMyTikTokProfile();
+        });
+
+        confirmMyAccountBtn.onclick = () => {
+            if (!foundMyAccount) return;
+
+            displayUsername.textContent = foundMyAccount.displayName;
+            localStorage.setItem('tiktokUsername', foundMyAccount.displayName);
+
+            if (topProfileAvatar) {
+                topProfileAvatar.style.backgroundImage = `url('${foundMyAccount.avatarUrl}')`;
+            }
+            if (headerAvatar) {
+                headerAvatar.style.backgroundImage = `url('${foundMyAccount.avatarUrl}')`;
+            }
+            localStorage.setItem('tiktokCustomAvatar', foundMyAccount.avatarUrl);
+
+            const newCoins = parseInt(myAccountCoinsInput.value, 10);
+            if (!isNaN(newCoins) && newCoins >= 0) {
+                currentBalance = newCoins;
+                updateBalanceDisplay();
+                localStorage.setItem('tiktokBalance', currentBalance);
+            }
+
+            myAccountModal.style.display = 'none';
+        };
+    })();
+
 </script>
     <script src="/supabase-tiktok-demo.js"></script>
 </body>
